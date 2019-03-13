@@ -1,4 +1,4 @@
-package ru.virarnd.coderslist.model;
+package ru.virarnd.coderslist.models;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,10 +9,14 @@ public final class User {
     private String name;
     @SerializedName("avatar_url")
     private String avatar;
+    @SerializedName("id")
+    private long userId;
 
-    public User(String name, String avatar) {
+
+    public User(String name, String avatar, long userId) {
         this.name = name;
         this.avatar = avatar;
+        this.userId = userId;
     }
 
     public String getName() {
@@ -23,18 +27,23 @@ public final class User {
         return avatar;
     }
 
+    public long getUserId() {
+        return userId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(name, user.name) &&
-                Objects.equals(avatar, user.avatar);
+        return getUserId() == user.getUserId() &&
+                Objects.equals(getName(), user.getName()) &&
+                Objects.equals(getAvatar(), user.getAvatar());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, avatar);
+        return Objects.hash(getName(), getAvatar(), getUserId());
     }
 
     @Override
@@ -42,6 +51,7 @@ public final class User {
         return "User{" +
                 "name='" + name + '\'' +
                 ", avatar='" + avatar + '\'' +
+                ", userId=" + userId +
                 '}';
     }
 }

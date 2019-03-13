@@ -1,7 +1,7 @@
 package ru.virarnd.coderslist;
 
 import androidx.appcompat.app.AppCompatActivity;
-import ru.virarnd.coderslist.view.GitUsersFragment;
+import ru.virarnd.coderslist.views.GitUsersFragment;
 
 import android.os.Bundle;
 

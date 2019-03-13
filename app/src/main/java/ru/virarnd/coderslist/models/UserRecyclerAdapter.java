@@ -1,4 +1,4 @@
-package ru.virarnd.coderslist.model;
+package ru.virarnd.coderslist.models;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,8 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapter.UserViewHolder> {
 
-    ArrayList<User> userList = new ArrayList<>();
+    private ArrayList<User> userList = new ArrayList<>();
+    private LoadMoreListener loadMoreListener;
 
     @NonNull
     @Override
@@ -39,12 +39,16 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapte
         holder.tvName.setText(user.getName());
         Glide.with(holder.itemView.getContext())
                 .load(user.getAvatar())
-                .apply(bitmapTransform(new RoundedCornersTransformation(32, 0, RoundedCornersTransformation.CornerType.OTHER_BOTTOM_LEFT)))
+                .apply(bitmapTransform(new RoundedCornersTransformation(36, 0, RoundedCornersTransformation.CornerType.OTHER_BOTTOM_LEFT)))
 //                .apply(RequestOptions.circleCropTransform())
 //                .transition(withCrossFade())
                 .placeholder(R.drawable.avatar_error)
                 .error(R.drawable.avatar_error)
                 .into(holder.imageView);
+
+        if ((position == getItemCount() - 1) && (loadMoreListener != null)) {
+            loadMoreListener.loadMoreUsers(user.getUserId());
+        }
 
     }
 
@@ -55,23 +59,30 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapte
 
 
     public void addUsers(List<User> users) {
-        int lastPosition = userList.size() - 1;
+        int lastPosition = userList.size();
         userList.addAll(users);
         notifyItemRangeInserted(lastPosition, users.size());
     }
 
+    public void setLoadMoreListener(LoadMoreListener loadMoreListener) {
+        this.loadMoreListener = loadMoreListener;
+    }
 
-
-    public class UserViewHolder extends RecyclerView.ViewHolder {
+    class UserViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_user_name)
         TextView tvName;
         @BindView(R.id.iv_user_avatar)
         AppCompatImageView imageView;
 
 
-        public UserViewHolder(@NonNull View view) {
+        UserViewHolder(@NonNull View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
+    }
+
+
+    public interface LoadMoreListener {
+        public void loadMoreUsers(long userId);
     }
 }
