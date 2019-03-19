@@ -1,4 +1,4 @@
-package ru.virarnd.coderslist.models;
+package ru.virarnd.coderslist.models.users;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +18,6 @@ import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import ru.virarnd.coderslist.R;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapter.UserViewHolder> {
@@ -40,8 +39,6 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapte
         Glide.with(holder.itemView.getContext())
                 .load(user.getAvatar())
                 .apply(bitmapTransform(new RoundedCornersTransformation(36, 0, RoundedCornersTransformation.CornerType.OTHER_BOTTOM_LEFT)))
-//                .apply(RequestOptions.circleCropTransform())
-//                .transition(withCrossFade())
                 .placeholder(R.drawable.avatar_error)
                 .error(R.drawable.avatar_error)
                 .into(holder.imageView);

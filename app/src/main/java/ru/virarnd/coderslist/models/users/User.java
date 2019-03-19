@@ -1,15 +1,10 @@
-package ru.virarnd.coderslist.models;
-
-import com.google.gson.annotations.SerializedName;
+package ru.virarnd.coderslist.models.users;
 
 import java.util.Objects;
 
 public final class User {
-    @SerializedName("login")
     private String name;
-    @SerializedName("avatar_url")
     private String avatar;
-    @SerializedName("id")
     private long userId;
 
 
@@ -48,7 +43,7 @@ public final class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "OverflowUser_old{" +
                 "name='" + name + '\'' +
                 ", avatar='" + avatar + '\'' +
                 ", userId=" + userId +
