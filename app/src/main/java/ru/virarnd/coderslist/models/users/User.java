@@ -7,6 +7,8 @@ public final class User {
     private String avatar;
     private long userId;
 
+    public User() {
+    }
 
     public User(String name, String avatar, long userId) {
         this.name = name;
@@ -41,12 +43,4 @@ public final class User {
         return Objects.hash(getName(), getAvatar(), getUserId());
     }
 
-    @Override
-    public String toString() {
-        return "OverflowUser_old{" +
-                "name='" + name + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", userId=" + userId +
-                '}';
-    }
 }

@@ -1,21 +1,36 @@
 package ru.virarnd.coderslist;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
+import android.service.autofill.UserData;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
+
+import java.util.HashMap;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ru.virarnd.coderslist.models.UserDatabase;
 import ru.virarnd.coderslist.models.github.GithubUsersService;
 import ru.virarnd.coderslist.models.overflow.OverflowUsersService;
+import ru.virarnd.coderslist.network.AddTokenInterceptor;
+import ru.virarnd.coderslist.network.ReceivedTokenInterceptor;
+import ru.virarnd.coderslist.presenters.UserPresenter;
 
 public class App extends Application {
 
-    GithubUsersService githubUsersService;
-    OverflowUsersService overflowUsersService;
+    private GithubUsersService githubUsersService;
+    private OverflowUsersService overflowUsersService;
+    private HashMap<String, UserPresenter> userPresenters = new HashMap<>();
+    //    private SharedPreferences preferences;
+    private UserDatabase userDatabaseHelper;
+    private SQLiteDatabase userDatabase;
+
 
     public GithubUsersService getGithubUsersService() {
         return githubUsersService;
@@ -29,6 +44,10 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+//        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        userDatabaseHelper = new UserDatabase(this);
+        userDatabase = userDatabaseHelper.getWritableDatabase();
+
         createNetworkServices();
     }
 
@@ -38,6 +57,8 @@ public class App extends Application {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addNetworkInterceptor(httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC))
                 .addNetworkInterceptor(chuckInterceptor)
+//                .addInterceptor(new ReceivedTokenInterceptor(preferences))      // Авторизация и аутентификация
+//                .addInterceptor(new AddTokenInterceptor(preferences))
                 .build();
 
         Retrofit gitRetrofit = new Retrofit.Builder()
@@ -56,4 +77,21 @@ public class App extends Application {
                 .build();
         overflowUsersService = overflowRetrofit.create(OverflowUsersService.class);
     }
+
+    public void setUserPresenter(String key, UserPresenter userPresenter) {
+        if (userPresenter == null) {
+            userPresenters.remove(key);
+        } else {
+            userPresenters.put(key, userPresenter);
+        }
+    }
+
+    public UserPresenter getUserPresenter(String key) {
+        return userPresenters.get(key);
+    }
+
+    public SQLiteDatabase getUserDatabase() {
+        return userDatabase;
+    }
+
 }

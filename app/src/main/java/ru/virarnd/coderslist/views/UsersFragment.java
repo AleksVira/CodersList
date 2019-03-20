@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +27,13 @@ import ru.virarnd.coderslist.models.users.User;
 import ru.virarnd.coderslist.models.users.UserRecyclerAdapter;
 import ru.virarnd.coderslist.presenters.UserPresenter;
 
+import static ru.virarnd.coderslist.MainActivity.GITHUB;
+
 public class UsersFragment extends Fragment implements UserPresenter.View {
 
     public static final String TAG = UsersFragment.class.getSimpleName();
 
-    public static final String GITHUB = "GITHUB";
+    public static final String KEY = "USER_MODEL";
 
     @BindView(R.id.recycler_git)
     RecyclerView recyclerView;
@@ -41,14 +42,15 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
 
     private Unbinder unbinder;
     private UserRecyclerAdapter adapter;
-    private static UserPresenter presenter;
+    private UserPresenter presenter;
+    private String key;
 
-    public static UsersFragment newInstance(boolean isGitHub) {
+    public static UsersFragment newInstance(String userModelName) {
         Bundle args = new Bundle();
-        args.putBoolean(GITHUB, isGitHub);
+        args.putString(KEY, userModelName);
         UsersFragment fragment = new UsersFragment();
         fragment.setArguments(args);
-        Log.d(TAG, "Instance created, isGitHub = " + isGitHub);
+//        Log.d(TAG, "Instance created, isGitHub = " + userModelName);
         return fragment;
     }
 
@@ -67,74 +69,19 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
         recyclerView.setHasFixedSize(true);
 
         UserModel userModel;
-        if (getArguments().getBoolean(GITHUB)) {
+        key = getArguments().getString(KEY);
+        if (key.equals(GITHUB)) {
             userModel = new GitUsersUserModel(((App) getActivity().getApplication()).getGithubUsersService());
         } else {
             userModel = new OverflowUsersUserModel(((App) getActivity().getApplication()).getOverflowUsersService());
         }
+
+        presenter = ((App) getActivity().getApplication()).getUserPresenter(key);
         if (presenter == null) {
-            presenter = new UserPresenter(userModel);
+            presenter = new UserPresenter(userModel, ((App) getActivity().getApplication()).getUserDatabase());
+            ((App) getActivity().getApplication()).setUserPresenter(key, presenter);
         }
         presenter.attachView(this);
-
-/*
-        disposable = userModel.getUsers()
-                .retry(3)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(users -> adapter.addUsers(users),
-                        error -> Toast.makeText(getContext(), "Error on network request", Toast.LENGTH_LONG).show());
-*/
-
-/*
-        userModel.getUsers(new UserModel.ModelResponse<List<User>>() {
-            @Override
-            public void onSuccess(List<User> response) {
-                adapter.addUsers(response);
-            }
-
-            @Override
-            public void onError(Throwable error) {
-                Toast.makeText(getContext(), "Error on network request", Toast.LENGTH_LONG).show();
-            }
-        });
-*/
-
-
-/*
-        githubUsersService = ((App) getActivity().getApplication()).getGithubUsersService();
-        call = githubUsersService.getLimitedPerPageUser(0, USERS_PER_PAGE);
-        call.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                adapter.addUsers(response.body());
-            }
-
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                Toast.makeText(getContext(), "Error on network request", Toast.LENGTH_LONG).show();
-            }
-        });
-*/
-
- /*       adapter.setLoadMoreListener(userId -> {
-            if (callMoreUsers != null && !callMoreUsers.isExecuted()) {
-                return;
-            }
-            callMoreUsers = githubUsersService.getLimitedPerPageUser(userId, USERS_PER_PAGE);
-            callMoreUsers.enqueue(new Callback<List<User>>() {
-                @Override
-                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                    adapter.addUsers(response.body());
-                }
-
-                @Override
-                public void onFailure(Call<List<User>> call, Throwable t) {
-                    Toast.makeText(getContext(), "Error on network request", Toast.LENGTH_LONG).show();
-                }
-            });
-        });
-*/
         return view;
     }
 
@@ -142,9 +89,9 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
-        if (getActivity().isFinishing()) {
+        if (isRemoving()) {
             presenter.stopLoading();
-            presenter = null;
+            ((App) getActivity().getApplication()).setUserPresenter(key, null);
         }
         unbinder.unbind();
     }

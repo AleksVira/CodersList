@@ -43,27 +43,6 @@ public class OverflowUsersUserModel implements UserModel {
         }
     }
 
-    /*
-    @Override
-    public void getUsers(ModelResponse<List<User>> modelResponse) {
-        overflowUsersService.getLimitedPerPageUser(1, "stackoverflow", USERS_PER_PAGE)
-                .enqueue(new Callback<UserResponse>() {
-                    @Override
-                    public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                        ArrayList<User> users = new ArrayList<>();
-                        for (OverflowUser overflowUser : response.body().getItems()) {
-                            users.add(overflowUser.mapToUser());
-                        }
-                        modelResponse.onSuccess(users);
-                    }
-
-                    @Override
-                    public void onFailure(Call<UserResponse> call, Throwable t) {
-                        modelResponse.onError(t);
-                    }
-                });
-    }
-*/
 
 
 

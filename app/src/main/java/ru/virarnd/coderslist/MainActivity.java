@@ -9,6 +9,10 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String GITHUB = "GitHub";
+    public static final String STACKOVERFLOW = "StackOverflow";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, UsersFragment.newInstance(true))
+                    .add(R.id.fragment_container, UsersFragment.newInstance(GITHUB))
                     .commit();
         }
     }
@@ -31,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_settings) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, UsersFragment.newInstance(false))
+                    .replace(R.id.fragment_container, UsersFragment.newInstance(STACKOVERFLOW))
                     .addToBackStack("BackStack")
                     .commit();
             return true;
