@@ -1,25 +1,22 @@
 package ru.virarnd.coderslist;
 
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
-import android.service.autofill.UserData;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 
 import java.util.HashMap;
 
+import androidx.room.Room;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.virarnd.coderslist.models.UserDatabase;
+import ru.virarnd.coderslist.models.UserRoomDatabase;
 import ru.virarnd.coderslist.models.github.GithubUsersService;
 import ru.virarnd.coderslist.models.overflow.OverflowUsersService;
-import ru.virarnd.coderslist.network.AddTokenInterceptor;
-import ru.virarnd.coderslist.network.ReceivedTokenInterceptor;
 import ru.virarnd.coderslist.presenters.UserPresenter;
 
 public class App extends Application {
@@ -29,8 +26,9 @@ public class App extends Application {
     private HashMap<String, UserPresenter> userPresenters = new HashMap<>();
     //    private SharedPreferences preferences;
     private UserDatabase userDatabaseHelper;
-    private SQLiteDatabase userDatabase;
+    private SQLiteDatabase sqLiteDatabase;
 
+    private UserRoomDatabase roomDatabase;
 
     public GithubUsersService getGithubUsersService() {
         return githubUsersService;
@@ -46,7 +44,12 @@ public class App extends Application {
         super.onCreate();
 //        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         userDatabaseHelper = new UserDatabase(this);
-        userDatabase = userDatabaseHelper.getWritableDatabase();
+        sqLiteDatabase = userDatabaseHelper.getWritableDatabase();
+
+        roomDatabase = Room
+                .databaseBuilder(this, UserRoomDatabase.class, "RoomDatabase")
+                .allowMainThreadQueries()
+                .build();
 
         createNetworkServices();
     }
@@ -90,8 +93,12 @@ public class App extends Application {
         return userPresenters.get(key);
     }
 
-    public SQLiteDatabase getUserDatabase() {
-        return userDatabase;
+    public SQLiteDatabase getSqLiteDatabase() {
+        return sqLiteDatabase;
+    }
+
+    public UserRoomDatabase getRoomDatabase() {
+        return roomDatabase;
     }
 
 }

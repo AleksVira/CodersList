@@ -23,6 +23,8 @@ import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapter.UserViewHolder> {
 
     private ArrayList<User> userList = new ArrayList<>();
+    private ArrayList<User> oldUserList;
+    private ArrayList<User> filteredUserList;
     private LoadMoreListener loadMoreListener;
 
     @NonNull
@@ -63,6 +65,18 @@ public class UserRecyclerAdapter extends RecyclerView.Adapter<UserRecyclerAdapte
 
     public void setLoadMoreListener(LoadMoreListener loadMoreListener) {
         this.loadMoreListener = loadMoreListener;
+    }
+
+    public void setFilteredUsers(List<User> filteredList) {
+        userList.clear();
+        userList.addAll(filteredList);
+        notifyDataSetChanged();
+    }
+
+    public void setNoFilter(List<User> oldUserList) {
+        userList.clear();
+        userList.addAll(oldUserList);
+        notifyDataSetChanged();
     }
 
     class UserViewHolder extends RecyclerView.ViewHolder {

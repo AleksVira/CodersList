@@ -2,13 +2,14 @@ package ru.virarnd.coderslist.models.users;
 
 import java.util.Objects;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity
 public final class User {
     private String name;
     private String avatar;
-    private long userId;
-
-    public User() {
-    }
+    @PrimaryKey private long userId;
 
     public User(String name, String avatar, long userId) {
         this.name = name;

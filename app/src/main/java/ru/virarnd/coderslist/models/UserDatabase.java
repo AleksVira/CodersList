@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
-import io.reactivex.Completable;
 import io.reactivex.Single;
 import ru.virarnd.coderslist.models.users.User;
 

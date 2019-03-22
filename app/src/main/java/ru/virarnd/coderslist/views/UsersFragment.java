@@ -11,13 +11,18 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
+import com.jakewharton.rxbinding3.widget.RxTextView;
+
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import ru.virarnd.coderslist.App;
 import ru.virarnd.coderslist.R;
 import ru.virarnd.coderslist.models.UserModel;
@@ -39,6 +44,8 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
     RecyclerView recyclerView;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+    @BindView(R.id.te_input)
+    TextInputEditText editText;
 
     private Unbinder unbinder;
     private UserRecyclerAdapter adapter;
@@ -78,10 +85,24 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
 
         presenter = ((App) getActivity().getApplication()).getUserPresenter(key);
         if (presenter == null) {
-            presenter = new UserPresenter(userModel, ((App) getActivity().getApplication()).getUserDatabase());
+            presenter = new UserPresenter(userModel, ((App) getActivity().getApplication()).getSqLiteDatabase(), ((App) getActivity().getApplication()).getRoomDatabase());
             ((App) getActivity().getApplication()).setUserPresenter(key, presenter);
         }
         presenter.attachView(this);
+
+
+        RxTextView.textChanges(editText)
+                .debounce(700, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(charSequence -> {
+                    if (charSequence.length() > 0) {
+                        presenter.selectFiltered(charSequence);
+                    } else {
+                        presenter.noFilter();
+                    }
+                })
+                .subscribe();
+
         return view;
     }
 
@@ -105,8 +126,19 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
     }
 
     @Override
+    public void onFilteredUserListLoaded(List<User> filteredList) {
+        adapter.setFilteredUsers(filteredList);
+    }
+
+    @Override
+    public void onRemoveFilter(List<User> oldUserList) {
+        adapter.setNoFilter(oldUserList);
+    }
+
+    @Override
     public void onError(String errorMessage) {
         Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
         progressBar.setVisibility(View.GONE);
     }
+
 }
