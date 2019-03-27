@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import ru.virarnd.coderslist.models.users.User;
 
 public class GitUser {
+
+    public static final String SITE = "github.com";
+
     @SerializedName("login")
     private String name;
     @SerializedName("avatar_url")
@@ -13,6 +16,6 @@ public class GitUser {
     private long userId;
 
     public User mapToUser() {
-        return new User(name, avatar, userId);
+        return new User(name, avatar, SITE, userId);
     }
 }

@@ -5,6 +5,10 @@ import com.google.gson.annotations.SerializedName;
 import ru.virarnd.coderslist.models.users.User;
 
 public class OverflowUser {
+
+    public static final String SITE = "stackoverflow.com";
+
+
     @SerializedName("display_name")
     private String name;
     @SerializedName("profile_image")
@@ -13,7 +17,7 @@ public class OverflowUser {
     private long userId;
 
     public User mapToUser() {
-        return new User(name, avatar, userId);
+        return new User(name, avatar, SITE, userId);
     }
 
 }

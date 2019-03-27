@@ -85,7 +85,7 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
 
         presenter = ((App) getActivity().getApplication()).getUserPresenter(key);
         if (presenter == null) {
-            presenter = new UserPresenter(userModel, ((App) getActivity().getApplication()).getSqLiteDatabase(), ((App) getActivity().getApplication()).getRoomDatabase());
+            presenter = new UserPresenter(userModel, ((App) getActivity().getApplication()).getRoomDatabase());
             ((App) getActivity().getApplication()).setUserPresenter(key, presenter);
         }
         presenter.attachView(this);

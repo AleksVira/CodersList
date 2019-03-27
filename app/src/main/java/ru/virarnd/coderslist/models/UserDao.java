@@ -1,6 +1,5 @@
 package ru.virarnd.coderslist.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.room.Dao;
@@ -27,7 +26,7 @@ public interface UserDao {
     void delete(User user);
 
     @Query("SELECT * FROM user")
-    List<User> getAllUser();
+    Single<List<User>> getAllUser();
 
     @Query("SELECT * FROM user WHERE userId = :id")
     User getUserById(long id);
