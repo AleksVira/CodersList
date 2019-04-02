@@ -17,6 +17,8 @@ import com.jakewharton.rxbinding3.widget.RxTextView;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -25,9 +27,6 @@ import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import ru.virarnd.coderslist.App;
 import ru.virarnd.coderslist.R;
-import ru.virarnd.coderslist.models.UserModel;
-import ru.virarnd.coderslist.models.github.GitUsersUserModel;
-import ru.virarnd.coderslist.models.overflow.OverflowUsersUserModel;
 import ru.virarnd.coderslist.models.users.User;
 import ru.virarnd.coderslist.models.users.UserRecyclerAdapter;
 import ru.virarnd.coderslist.presenters.UserPresenter;
@@ -49,8 +48,10 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
 
     private Unbinder unbinder;
     private UserRecyclerAdapter adapter;
-    private UserPresenter presenter;
     private String key;
+
+    @Inject UserPresenter presenter;
+
 
     public static UsersFragment newInstance(String userModelName) {
         Bundle args = new Bundle();
@@ -68,6 +69,8 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_users, container, false);
+        ((App) getActivity().getApplication()).getAppComponent().createUserComponent().injectUserFragment(this);
+
         unbinder = ButterKnife.bind(this, view);
 
         adapter = new UserRecyclerAdapter();
@@ -75,19 +78,23 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
 
-        UserModel userModel;
+//        UserModel userModel;
         key = getArguments().getString(KEY);
+/*
         if (key.equals(GITHUB)) {
-            userModel = new GitUsersUserModel(((App) getActivity().getApplication()).getGithubUsersService());
+            userModel = new GitUsersUserModel(getGithubUsersService);
         } else {
-            userModel = new OverflowUsersUserModel(((App) getActivity().getApplication()).getOverflowUsersService());
+            userModel = new OverflowUsersUserModel(getOverflowUsersService);
         }
+*/
 
+/*
         presenter = ((App) getActivity().getApplication()).getUserPresenter(key);
         if (presenter == null) {
-            presenter = new UserPresenter(userModel, ((App) getActivity().getApplication()).getRoomDatabase());
+            presenter = new UserPresenter(userModel, roomDatabase);
             ((App) getActivity().getApplication()).setUserPresenter(key, presenter);
         }
+*/
         presenter.attachView(this);
 
 
@@ -112,7 +119,7 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
         presenter.detachView();
         if (isRemoving()) {
             presenter.stopLoading();
-            ((App) getActivity().getApplication()).setUserPresenter(key, null);
+//            ((App) getActivity().getApplication()).setUserPresenter(key, null);
         }
         unbinder.unbind();
     }
