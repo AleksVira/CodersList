@@ -19,15 +19,14 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         appComponent = DaggerAppComponent.builder()
-                .contextModule(new ContextModule(this))
-                .build();
+                .setContextBuilder(this)
+                .createComponent();
+
+//        appComponent = DaggerAppComponent.builder()
+//                .contextModule(new ContextModule(this))
+//                .build();
     }
 
-//    private void createNetworkServices() {
-//        ChuckInterceptor chuckInterceptor = new ChuckInterceptor(this);
-//        githubUsersService = gitRetrofit.create(GithubUsersService.class);
-//        overflowUsersService = overflowRetrofit.create(OverflowUsersService.class);
-//    }
 
 /*
     public void setUserPresenter(String key, UserPresenter userPresenter) {
@@ -43,10 +42,5 @@ public class App extends Application {
     }
 */
 
-/*
-    public UserRoomDatabase getRoomDatabase() {
-        return roomDatabase;
-    }
-*/
 
 }

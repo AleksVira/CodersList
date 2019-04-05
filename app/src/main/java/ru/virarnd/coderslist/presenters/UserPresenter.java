@@ -1,6 +1,5 @@
 package ru.virarnd.coderslist.presenters;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import java.util.ArrayList;

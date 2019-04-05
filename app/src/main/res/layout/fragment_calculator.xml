@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.CalculatorFragment"
+    >
+
+    <EditText
+        android:id="@+id/arg1"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/arg2"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/arg2"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/tv_result"
+        app:layout_constraintEnd_toEndOf="@+id/arg1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/arg1"
+        app:layout_constraintTop_toBottomOf="@+id/arg1" />
+
+
+    <ImageButton
+        android:id="@+id/plus_button"
+        android:layout_width="@dimen/operation_button_image_size"
+        android:layout_height="@dimen/operation_button_image_size"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/plus_box"
+        app:layout_constraintBottom_toTopOf="@+id/minus_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/vertical_guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/minus_button"
+        android:layout_width="@dimen/operation_button_image_size"
+        android:layout_height="@dimen/operation_button_image_size"
+        android:src="@drawable/minus_box"
+        app:layout_constraintBottom_toTopOf="@+id/multiplication_button"
+        app:layout_constraintEnd_toEndOf="@+id/plus_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/plus_button"
+        app:layout_constraintTop_toBottomOf="@+id/plus_button" />
+
+    <ImageButton
+        android:id="@+id/multiplication_button"
+        android:layout_width="@dimen/operation_button_image_size"
+        android:layout_height="@dimen/operation_button_image_size"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/multiplication_box"
+        app:layout_constraintBottom_toTopOf="@+id/division_button"
+        app:layout_constraintEnd_toEndOf="@+id/minus_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/minus_button"
+        app:layout_constraintTop_toBottomOf="@+id/minus_button" />
+
+    <ImageButton
+        android:id="@+id/division_button"
+        android:layout_width="@dimen/operation_button_image_size"
+        android:layout_height="@dimen/operation_button_image_size"
+        android:src="@drawable/division_box"
+        app:layout_constraintBottom_toTopOf="@+id/horizontal_guideline"
+        app:layout_constraintEnd_toEndOf="@+id/multiplication_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/multiplication_button"
+        app:layout_constraintTop_toBottomOf="@+id/multiplication_button" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/horizontal_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vertical_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/division_button"
+        app:layout_constraintEnd_toStartOf="@+id/vertical_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Result"
+        android:textSize="24sp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

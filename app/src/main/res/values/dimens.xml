@@ -2,4 +2,5 @@
 <resources>
     <dimen name="avatar_margin">12dp</dimen>
     <dimen name="user_image_size">80dp</dimen>
+    <dimen name="operation_button_image_size">60dp</dimen>
 </resources>

@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -28,6 +29,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import ru.virarnd.coderslist.App;
 import ru.virarnd.coderslist.R;
 import ru.virarnd.coderslist.models.users.User;
+import ru.virarnd.coderslist.models.users.UserComponent;
 import ru.virarnd.coderslist.models.users.UserRecyclerAdapter;
 import ru.virarnd.coderslist.presenters.UserPresenter;
 
@@ -36,8 +38,9 @@ import static ru.virarnd.coderslist.MainActivity.GITHUB;
 public class UsersFragment extends Fragment implements UserPresenter.View {
 
     public static final String TAG = UsersFragment.class.getSimpleName();
-
     public static final String KEY = "USER_MODEL";
+    private static UserComponent userComponent;
+
 
     @BindView(R.id.recycler_git)
     RecyclerView recyclerView;
@@ -69,10 +72,10 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_users, container, false);
-        ((App) getActivity().getApplication()).getAppComponent().createUserComponent().injectUserFragment(this);
+        FragmentViewModel fragmentViewModel = ViewModelProviders.of(this).get(FragmentViewModel.class);
+        fragmentViewModel.getUserComponent().injectUserFragment(this);
 
         unbinder = ButterKnife.bind(this, view);
-
         adapter = new UserRecyclerAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
@@ -120,6 +123,7 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
         if (isRemoving()) {
             presenter.stopLoading();
 //            ((App) getActivity().getApplication()).setUserPresenter(key, null);
+//            userComponent = null;
         }
         unbinder.unbind();
     }
@@ -129,7 +133,6 @@ public class UsersFragment extends Fragment implements UserPresenter.View {
     public void onUserListLoaded(List<User> userList) {
         adapter.addUsers(userList);
         progressBar.setVisibility(View.GONE);
-
     }
 
     @Override
